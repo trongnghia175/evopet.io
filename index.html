@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gen Mutation Notebook</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e1e1e, #2a2a2a);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 { font-size: 36px; margin-bottom: 20px; }
+    #pet {
+      font-size: 80px;
+      margin: 20px;
+      transition: all 0.3s ease;
+    }
+    #level {
+      font-size: 28px;
+      color: #fff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    }
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .button-container button {
+      margin: 8px;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #444;
+      color: #fff;
+      transition: background 0.3s;
+    }
+    .button-container button:hover {
+      background-color: #666;
+    }
+    #expBar {
+      width: 300px;
+      height: 25px;
+      background: #555;
+      margin: 20px auto;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #expFill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #0ff, #0cf);
+      transition: width 0.5s;
+    }
+    #history {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid #555;
+      border-radius: 10px;
+      margin: 30px auto 0;
+      padding: 10px;
+      width: 90%;
+      max-width: 600px;
+      text-align: left;
+    }
+    #timers {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #ccc;
+    }
+    #codeSection {
+      margin-top: 30px;
+    }
+    #codeInput {
+      padding: 8px;
+      font-size: 16px;
+      background: #fff;
+      color: #000;
+      border-radius: 5px;
+    }
+    #codeButton {
+      padding: 8px 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background: #0ff;
+      color: #000;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥EvoPet.io🔥</h1>
+  <div id="pet">🐣</div>
+  <h3 id="level">Cấp: 1</h3>
+
+  <div class="button-container">
+    <button onclick="feedPet()">🍎 Cho ăn (<span id="food">5</span>)</button>
+    <button onclick="interact()">💬 Tương tác (<span id="interaction">30</span>)</button>
+  </div>
+
+  <div id="expBar"><div id="expFill"></div></div>
+  <div id="expInfo" style="font-size:14px; color:#aaa;"></div>
+  <div id="timers">
+    +1 thức ăn sau <span id="foodTimer">600</span>s | +1 tương tác sau <span id="interactionTimer">10</span>s
+  </div>
+  <div id="history">
+    <h3>Lịch sử gen:</h3>
+    <ul id="genHistory"></ul>
+  </div>
+  <div id="codeSection">
+    <input type="text" id="codeInput" placeholder="Nhập mã nhận quà">
+    <button id="codeButton" onclick="redeemCode()">Nhận</button>
+  </div>
+
+  <script>
+    let level = 1, exp = 0, food = 5, interactionPoints = 30;
+    let genHistory = [], foodTimer = 600, interactionTimer = 10;
+    const petEl = document.getElementById("pet");
+    const levelEl = document.getElementById("level");
+    const foodEl = document.getElementById("food");
+    const interactionEl = document.getElementById("interaction");
+    const foodTimerEl = document.getElementById("foodTimer");
+    const interactionTimerEl = document.getElementById("interactionTimer");
+    const expFill = document.getElementById("expFill");
+
+    const emojis = ["🐣", "🐥", "🐤", "🐔", "🦄", "🐲", "🦖", "👾", "🐉", "🦀", "🦅", "🦇", "🐖", "🦈", "🐑", "🐊", "🦕", "🐦", "🕊️", "🐌", "🐛", "🦋", "🐞", "🐝", "🦟", "🦗", "🐜", "🐚", "🕷️", "🦂", "🐙", "🦑", "🦞", "🦐", "🐡", "🐠", "🐟", "🐳", "🐬", "🐧", "🦃", "🦚", "🦆", "🦢", "🕊️", "🐦", "🐓", "🦉", "🦜", "🦔", "🦡", "🐿️", "🐫", "🦍", "🐒", "🐅", "🐐", "🦌", "🐘", "🦛", "🦒", "🐃", "🐂", "🐇", "🐁", "🐈", "🐍", "🦊", "🐰", "🙉", "🦁", "🐷", "⛄", "🧟", "🧜", "🦹", "🧞", "🎃", "🧸", "👻"];
+
+    function getRequiredExp(lv) {
+      if (lv < 11) return 10;
+      if (lv < 31) return 50;
+      if (lv < 101) return 100;
+      if (lv < 201) return 100;
+      if (lv < 501) return 130;
+      return 150;
+    }
+
+    function addExp(amount) {
+      exp += amount;
+      while (true) {
+        const required = getRequiredExp(level);
+        if (exp >= required) {
+          exp -= required;
+          level++;
+          if (level > 500) {
+            level = 500;
+            exp = 0;
+            break;
+          }
+          genHistory.push(`Đột biến lên cấp ${level}`);
+          levelUpEffect();
+        } else break;
+      }
+      updateDisplay();
+      saveData();
+    }
+
+    function levelUpEffect() {
+      petEl.style.transition = "transform 0.3s";
+      petEl.style.transform = "scale(1.5)";
+      setTimeout(() => petEl.style.transform = "scale(1)", 300);
+    }
+
+    function feedPet() {
+      if (food <= 0) return;
+      food--;
+      addExp(5);
+    }
+
+    function interact() {
+      if (interactionPoints <= 0) return;
+      interactionPoints--;
+      addExp(1);
+    }
+
+    function updatePetDisplay() {
+      let emoji = "🐣";
+      let petColor = "#fff";
+      let prefix = "";
+
+      if (level >= 30 && level <= 150) {
+        petColor = `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`;
+        petEl.style.textShadow = "0 0 10px white";
+      } else {
+        petEl.style.textShadow = "none";
+      }
+
+      if (level >= 151 && level <= 300) prefix = "🔥 ";
+      if (level >= 301 && level <= 400) prefix = "🌌 ";
+      if (level >= 401 && level <= 499) prefix = "🌪️ ";
+      if (level >= 500) prefix = "👑 ";
+
+      const emojiIndex = Math.min(Math.floor(level / 3), emojis.length - 1);
+      emoji = emojis[emojiIndex];
+
+      petEl.textContent = `${prefix}${emoji}`;
+      petEl.style.color = petColor;
+
+      if (localStorage.getItem("petRenamed")) {
+        levelEl.textContent = `Cấp: ${level} - ${localStorage.getItem("petRenamed")}`;
+      } else {
+        levelEl.textContent = `Cấp: ${level}`;
+      }
+    }
+
+    function updateDisplay() {
+      foodEl.textContent = food;
+      interactionEl.textContent = interactionPoints;
+      foodTimerEl.textContent = foodTimer;
+      interactionTimerEl.textContent = interactionTimer;
+      expFill.style.width = `${(exp / getRequiredExp(level)) * 100}%`;
+      document.getElementById("expInfo").textContent = `EXP: ${exp}/${getRequiredExp(level)}`;
+      updatePetDisplay();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById("genHistory");
+      list.innerHTML = "";
+      genHistory.slice(-10).reverse().forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    }
+
+    function redeemCode() {
+      const code = document.getElementById("codeInput").value.trim().toLowerCase();
+      let usedCodes = JSON.parse(localStorage.getItem("usedCodes") || "[]");
+
+      if (usedCodes.includes(code)) {
+        alert("Bạn đã dùng mã này rồi!");
+        return;
+      }
+
+      if (code === "ta1") {
+        food += 1000;
+        alert("🎉 Bạn đã nhận được 1000 thức ăn!");
+      } else if (code === "ta2") {
+        interactionPoints += 50;
+        alert("💬 Bạn đã nhận được 50 tương tác!");
+      } else if (code === "expup") {
+        addExp(100);
+        alert("⚡ Bạn nhận được 100 EXP!");
+      } else if (code === "ta3") {
+        level = 500;
+        exp = 0;
+        genHistory.push("Thú cưng đã được nâng cấp lên cấp 500! 💥");
+        levelUpEffect();
+        updateDisplay();
+        saveData();
+      } else if (code === "reset500") {
+        localStorage.clear();
+        alert("🗑️ Dữ liệu đã được xoá! Trang sẽ tải lại.");
+        location.reload();
+        return;
+      } else {
+        alert("❌ Mã không hợp lệ!");
+        return;
+      }
+
+      usedCodes.push(code);
+      localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
+      updateDisplay();
+      saveData();
+    }
+
+    function saveData() {
+      localStorage.setItem("genPetData", JSON.stringify({
+        level, exp, genHistory, food, interactionPoints,
+        foodTimer, interactionTimer,
+        currentEmoji: petEl.textContent,
+        currentColor: petEl.style.color
+      }));
+    }
+
+    function loadData() {
+      const data = JSON.parse(localStorage.getItem("genPetData"));
+      if (data) {
+        const currentCap = getRequiredExp(data.level);
+        if (data.exp >= currentCap && data.level === 1) {
+          localStorage.removeItem("genPetData");
+          localStorage.removeItem("usedCodes");
+          alert("⚠️ Dữ liệu lỗi đã được tự động đặt lại!");
+          return;
+        }
+        level = data.level;
+        exp = data.exp;
+        genHistory = data.genHistory || [];
+        food = data.food ?? 5;
+        interactionPoints = data.interactionPoints ?? 30;
+        foodTimer = data.foodTimer ?? 600;
+        interactionTimer = data.interactionTimer ?? 10;
+        if (data.currentEmoji) petEl.textContent = data.currentEmoji;
+        if (data.currentColor) petEl.style.color = data.currentColor;
+      }
+    }
+
+    function startTimers() {
+      setInterval(() => {
+        if (foodTimer > 0) foodTimer--;
+        else {
+          food++;
+          foodTimer = 600;
+        }
+
+        if (interactionTimer > 0) interactionTimer--;
+        else {
+          interactionPoints++;
+          interactionTimer = 10;
+        }
+
+        updateDisplay();
+        saveData();
+      }, 1000);
+    }
+
+    loadData();
+    updateDisplay();
+    startTimers();
+  </script>
+</body>
+</html>
