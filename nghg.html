@@ -1,0 +1,174 @@
+<!DOCTYPE html><html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ngân hàng Mini - Giao diện mẫu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <!-- Header -->
+  <header class="bg-white shadow sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-2 font-bold text-xl text-indigo-600">
+        gachthe.vn
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a href="#dashboard" class="hover:text-indigo-600">Tổng quan</a>
+        <a href="#transfer" class="hover:text-indigo-600">Chuyển tiền</a>
+        <a href="#cards" class="hover:text-indigo-600">Thẻ</a>
+        <a href="#analytics" class="hover:text-indigo-600">Phân tích</a>
+        <a href="#settings" class="hover:text-indigo-600">Cài đặt</a>
+      </nav>
+      <!-- User Info -->
+      <div class="flex items-center gap-3">
+        <div class="text-right hidden sm:block">
+          <div class="text-sm font-semibold">Đàm Trọng Nghĩa</div>
+          <div class="text-xs text-gray-500">Tài khoản #001245</div>
+        </div>
+        <!-- Avatar đổi thành ảnh custom -->
+        <img src="https://i.postimg.cc/KzKck7tt/8ad3e721-a3ae-4d68-8e34-ab8feddb88f1.png" alt="avatar" class="w-10 h-10 rounded-full border" />
+      </div>
+    </div>
+  </header>  <!-- Main -->  <main class="max-w-7xl mx-auto px-4 py-10 space-y-16">
+    <!-- Dashboard -->
+    <section id="dashboard" class="space-y-6">
+      <h2 class="text-2xl font-bold flex items-center gap-2">📊 Tổng quan</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white rounded-2xl shadow hover:shadow-md transition">
+          <div class="text-sm text-gray-500">Số dư khả dụng</div>
+          <div class="mt-1 text-2xl font-bold text-indigo-600">12.350.000₫</div>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover:shadow-md transition">
+          <div class="text-sm text-gray-500">Lương tháng này</div>
+          <div class="mt-1 text-2xl font-bold text-emerald-600">16.500.000₫</div>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover:shadow-md transition">
+          <div class="text-sm text-gray-500">Số dư khả dụng</div>
+          <div class="mt-1 text-2xl font-bold text-violet-600">11.813.968 VND</div>
+        </div>
+      </div><div class="p-6 bg-white rounded-2xl shadow">
+    <h3 class="font-semibold mb-4">Giao dịch gần đây</h3>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="text-gray-500 text-left border-b">
+            <th class="py-2">Mã GD</th>
+            <th>Đối tác</th>
+            <th>Loại</th>
+            <th>Số tiền</th>
+            <th>Thời gian</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2">TXN-10293</td>
+            <td>GrabFood</td>
+            <td>Chi</td>
+            <td class="text-red-600">-120.000₫</td>
+            <td>Hôm nay 09:42</td>
+            <td>Ăn uống</td>
+          </tr>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2">TXN-10292</td>
+            <td>Chuyển Tiền</td>
+            <td>Chi</td>
+            <td class="text-green-600">-335.000₫</td>
+            <td>Hôm qua 18:36</td>
+            <td>Thu nhập</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Transfer -->
+<section id="transfer" class="space-y-6">
+  <h2 class="text-2xl font-bold flex items-center gap-2">💸 Chuyển tiền</h2>
+  <div class="p-6 bg-white rounded-2xl shadow space-y-4">
+    <div>
+      <label class="text-sm text-gray-500">Người nhận</label>
+      <input type="text" value="Nguyễn Văn A" class="w-full mt-1 px-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+    </div>
+    <div>
+      <label class="text-sm text-gray-500">Ngân hàng</label>
+      <select class="w-full mt-1 px-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <option>NeoBank</option>
+        <option>Vietcombank</option>
+        <option>Techcombank</option>
+      </select>
+    </div>
+    <div>
+      <label class="text-sm text-gray-500">Số tiền</label>
+      <input type="number" value="500000" class="w-full mt-1 px-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+    </div>
+    <div>
+      <label class="text-sm text-gray-500">Nội dung</label>
+      <input type="text" value="Chuyển tiền ăn trưa" class="w-full mt-1 px-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+    </div>
+    <button class="w-full md:w-auto px-6 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-medium">Xác nhận chuyển</button>
+  </div>
+</section>
+
+<!-- Cards -->
+<section id="cards" class="space-y-6">
+  <h2 class="text-2xl font-bold flex items-center gap-2">💳 Thẻ</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="p-6 rounded-2xl text-white bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg">
+      <div class="font-semibold">NeoBank Visa</div>
+      <div class="mt-2 text-xl tracking-widest">**** **** **** 1234</div>
+      <div class="mt-6">Số dư: 12.350.000₫</div>
+    </div>
+    <div class="p-6 rounded-2xl text-white bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg">
+      <div class="font-semibold">NeoBank Platinum</div>
+      <div class="mt-2 text-xl tracking-widest">**** **** **** 7788</div>
+      <div class="mt-6">Số dư: 35.800.000₫</div>
+    </div>
+  </div>
+</section>
+
+<!-- Analytics -->
+<section id="analytics" class="space-y-6">
+  <h2 class="text-2xl font-bold flex items-center gap-2">📈 Phân tích</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="p-6 bg-white rounded-2xl shadow">
+      <div class="text-sm text-gray-500">Chi tiêu</div>
+      <div class="mt-1 text-2xl font-bold text-red-600">5.430.000₫</div>
+    </div>
+    <div class="p-6 bg-white rounded-2xl shadow">
+      <div class="text-sm text-gray-500">Thu nhập</div>
+      <div class="mt-1 text-2xl font-bold text-green-600">17.000.000₫</div>
+    </div>
+    <div class="p-6 bg-white rounded-2xl shadow">
+      <div class="text-sm text-gray-500">Tiết kiệm ròng</div>
+      <div class="mt-1 text-2xl font-bold text-indigo-600">11.570.000₫</div>
+    </div>
+  </div>
+</section>
+
+<!-- Settings -->
+<section id="settings" class="space-y-6">
+  <h2 class="text-2xl font-bold flex items-center gap-2">⚙️ Cài đặt</h2>
+  <div class="p-6 bg-white rounded-2xl shadow space-y-4">
+    <div>
+      <label class="text-sm text-gray-500">Họ tên</label>
+      <input type="text" value="Đàm Trọng Nghĩa" class="w-full mt-1 px-3 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500" />
+    </div>
+    <div>
+      <label class="text-sm text-gray-500">Email</label>
+      <input type="email" value="user@example.com" class="w-full mt-1 px-3 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500" />
+    </div>
+    <div>
+      <label class="text-sm text-gray-500">Số điện thoại</label>
+      <input type="text" value="09xx xxx xxx" class="w-full mt-1 px-3 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500" />
+    </div>
+    <button class="px-6 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-medium">Lưu thay đổi</button>
+  </div>
+</section>
+
+  </main>  <footer class="py-6 text-center text-sm text-gray-500">
+    © 2025 NeoBank — Giao diện mẫu (không phải ngân hàng thật)
+  </footer>
+</body>
+</html>
